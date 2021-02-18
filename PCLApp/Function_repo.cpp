@@ -1,5 +1,5 @@
 ﻿#include<iostream>
-
+#include "stdafx.h"
 #include<fstream>
 #include<vector>
 #include<string>
