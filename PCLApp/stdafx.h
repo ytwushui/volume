@@ -1,127 +1,13 @@
 
-// stdafx.h : 标准系统包含文件的包含文件，
-// 或是经常使用但不常更改的
-// 特定于项目的包含文件
-
-#pragma once
-
-#ifndef VC_EXTRALEAN
-#define VC_EXTRALEAN            // 从 Windows 头中排除极少使用的资料
-#endif
-
-#include "targetver.h"
-
-#define _ATL_CSTRING_EXPLICIT_CONSTRUCTORS      // 某些 CString 构造函数将是显式的
-
-// 关闭 MFC 对某些常见但经常可放心忽略的警告消息的隐藏
-#define _AFX_ALL_WARNINGS
-
-#include <afxwin.h>         // MFC 核心组件和标准组件
-#include <afxext.h>         // MFC 扩展
 
 
 
-
-
-#ifndef _AFX_NO_OLE_SUPPORT
-#include <afxdtctl.h>           // MFC 对 Internet Explorer 4 公共控件的支持
-#endif
-#ifndef _AFX_NO_AFXCMN_SUPPORT
-#include <afxcmn.h>             // MFC 对 Windows 公共控件的支持
-#endif // _AFX_NO_AFXCMN_SUPPORT
-
-#include <afxcontrolbars.h>     // 功能区和控件条的 MFC 支持
-
-
-#include <afxsock.h>            // MFC 套接字扩展
-
-#undef min 
-#undef max 
-#define DEBUG_NEW new
-
-#define WM_NMDBLCLK            WM_USER+4
-#include <DbgHelp.h>
-#include <hidsdi.h>
-#include <setupapi.h>
-#include "StaticFunction.h"
-
-#include <vtkAutoInit.h>
-VTK_MODULE_INIT(vtkRenderingOpenGL2);
-VTK_MODULE_INIT(vtkInteractionStyle);
-VTK_MODULE_INIT(vtkRenderingFreeType);
-//#define vtkRenderingCore_AUTOINIT 2(vtkInteractionStyle,vtkRenderingOpenGL2)
-
-#include <vtk_glew.h>
-#include <vtkObject.h>
-#include <vtkVersion.h>
-#include <vtkActor.h>
-#include <vtkImageActor.h>
-#include <vtkBMPReader.h>
-#include <vtkPNGReader.h>
-#include <vtkSTLReader.h>
-#include <vtkQuadric.h> 
-#include <vtkSampleFunction.h> 
-#include <vtkShrinkFilter.h> 
-#include <vtkSmartPointer.h>
-#include <vtkOrientationMarkerWidget.h>
-#include <vtkBooleanOperationPolyDataFilter.h>
-#include <vtkTextProperty.h>
-#include <vtkCamera.h>
-#include <vtkCubeAxesActor2D.h>
-#include <vtkAnnotatedCubeActor.h>
-#include <vtkExtractGeometry.h> 
-#include <vtkAxesActor.h>
-#include <vtkPLYReader.h>
-#include <vtkOBJReader.h>
-#include <vtkTriangle.h>
-#include <vtkTriangleFilter.h>
-#include <vtkPolyDataMapper.h>
-#include <vtkMassProperties.h>
-#include <vtkCylinder.h>
-#include <vtkLine.h>
-#include <vtkPlane.h>
-#include <vtkSphere.h>
-#include <vtkImplicitBoolean.h>
-#include <vtkCylinderSource.h>
-#include <vtkCubeSource.h>
-#include <vtkSphereSource.h>
-#include <vtkProperty.h>
-#include <vtkClipPolyData.h>
-#include <vtkTransformPolyDataFilter.h>
-#include <vtkTransform.h>
-#include <vtkInteractorStyleTrackballCamera.h>
-#include <vtkRenderWindow.h>
-#include <vtkSmartPointer.h>
-#include <vtkWorldPointPicker.h>
-#include <vtkWin32OpenGLRenderWindow.h>
-#include <vtkObjectFactory.h>
-#include <vtkRenderer.h>
-#include <vtkRenderWindowInteractor.h>
-#include <vtkMath.h>
-#include <vtkNamedColors.h>
-#include <vtkPropPicker.h>
-#include <vtkInteractorObserver.h>
-#include <vtkCommand.h>
-#include <vtkBoxWidget.h>
-#include <vtkProp3DCollection.h>
-#include <vtkCaptionActor2D.h>
-#include <vtkTextActor.h>
-#include <vtkTextProperty.h>
-#include <vtkCaptionWidgetPositionCallback.h>
-#include <vtkInteractorStyleTrackballActor.h>
-#include <vtkInteractorStyleRubberBandPick.h>
-#include <vtkRendererCollection.h>
-//#include <vtkoutputwindow.h>
 
 #include <boost/thread/thread.hpp>
 #include <pcl/io/pcd_io.h>
 #include <pcl/io/ply_io.h>
 #include <pcl/io/vtk_lib_io.h>
-#include <pcl/io/openni2_grabber.h>
-#include <pcl/io/openni2/openni.h>
-//#include <Eigen/src/Core/util/StaticAssert.h>
-#include <pcl/io/openni2/openni2_device_info.h>
-//#include <OpenNI.h>
+
 #include <pcl/octree/octree.h>
 #include<pcl/common/eigen.h>
 //#include<Eigen/Geometry.h>
@@ -168,7 +54,7 @@ VTK_MODULE_INIT(vtkRenderingFreeType);
 #include <pcl/filters/radius_outlier_removal.h>
 #include <pcl/filters/statistical_outlier_removal.h>
 #include <pcl/kdtree/kdtree.h>
-#include <pcl/kdtree/impl/kdtree_flann.hpp>
+
 #include <pcl/keypoints/narf_keypoint.h>
 #include <pcl/sample_consensus/method_types.h>
 #include <pcl/sample_consensus/model_types.h>
@@ -193,62 +79,6 @@ VTK_MODULE_INIT(vtkRenderingFreeType);
 
 #include <pcl/range_image/range_image.h>
 
-
-
-#define RGB(r,g,b)          ((COLORREF)(((BYTE)(r)|((WORD)((BYTE)(g))<<8))|(((DWORD)(BYTE)(b))<<16)))
-
-/************Glog******************/
-#include <glog/logging.h>
-
-
-
-/************Ranger3SDK**********/
-#include <opencv2/opencv.hpp>
-#include <opencv2\imgproc\types_c.h>
-#include <Ranger3.h>
-
-
-
-#include "Mmsystem.h"
-#include<vector>
-
-#include "tinyxml2.h"
-#include "dbt.h"
-//#include "hidapi.h"
-#include <GoSdk/GoSdk.h>
-//#include "EthernetScanner3D.h"
-#include "EthernetScanner3DDefine.h"
-/************FocalSpec**********/
-#include "PeakStructure.h"
-#include "CameraDll.h"
-#include "CameraStatus.h"
-#include "Callback.h"
-#include "VevoParameterDefinitions.h"
-/*******************************/
-#include "EthernetScannerSDK.h"
-#include "EthernetScannerSDKDefine.h"
-
-/************PolyWorksSDK**********/
-#include "PolyWorksSDK/COM/IIMInspect.h"
-#include "PolyWorksSDK/COM/IIMPointCloud.h"
-#include "PolyWorksSDK/COM/IIMSceneCamera.h"
-//#include "PolyWorksSDK/COM/IIMInspect_i.c"
-//#include "PolyWorksSDK/COM/IIMPointCloud_i.c"
-//#include "PolyWorksSDK/COM/IIMSceneCamera_i.c"
-//#include "PolyWorksSDK/COM/IMInspect_i.c"
-
-
-
-/*****************VisionaryT******************************/
-#include <boost/smart_ptr/shared_ptr.hpp>
-#include <boost/smart_ptr/make_shared.hpp>
-#include "VisionaryAutoIPScan.h"
-#include "VisionaryTData.h"    // Header specific for the Time of Flight data
-#include "VisionaryDataStream.h"
-#include "VisionaryControl.h"
-#include "PointCloudPlyWriter.h"
-#include "CoLaBCommandBuilder.h"
-#include "CoLaBCommandReader.h"
 
 
 

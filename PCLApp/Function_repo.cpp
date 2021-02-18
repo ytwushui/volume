@@ -11,13 +11,10 @@
 #include<pcl\registration\ndt.h>
 #include<boost/thread/thread.hpp>
 using namespace std;
-int plc_txt_to_pck(const char* open_txt = "D:\\pointcloud\\txttopcd\\txttopcd\\2019.6.1.01.txt", const char* save_pcd = "D:\\pointcloud\\testpcl\\new_pcd.pcd", string type="xyz");
-const char* getfilename(const char p[] = "D:\\SoftWare\\Adobe\\Photoshop5.exe");
+
 int plctopcd(string type, string file);
 int user_data;
-int singlepclview();
-int multiviewerndt();
-int singlepclviewer(string file);
+int multiviewerndt(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud1, pcl::PointCloud<pcl::PointXYZ>::Ptr cloud2);
 void viewerOneOff(pcl::visualization::PCLVisualizer& viewer)
 {
 	
@@ -71,222 +68,108 @@ void getFiles1(string path, vector<string>& files)
 		_findclose(hFile);
 	}
 }
+int findplane(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud);
+
 int main()
 {   
-	plc_txt_to_pck("D:\\pointcloud\\3D_reconstruction2\\image\\calculation\\out_tph.txt", "D:\\pointcloud\\3D_reconstruction2\\image\\calculation\\out_tph_pcd.pcd");
-	
-	if (true) {
-		return 0;
-	}
-
-	const char *filePath = "D:\\cameralsdk\\3D扫描设备配置软件 V1.2.3\\ResultData\\left\\";
-	vector<string> files;
-	//vector<string> filesname; 
-
-	//获取该路径下的所有文件路径  
-	getFiles1(filePath, files);
-	//获取该路径下的所有文件路径和文件名 
-	//getFiles2(filePath, files, filesname);
-
-	char str[30];
-	string type = "xyznormal";
-	/*for (int i = 0; i < files.size(); i++)
-	{
-		cout << files[i].c_str() << endl;
-		//plctopcd(type,files[i]);
-
-	}*/
-
-	
-	
-
-	singlepclviewer("D://pointcloud//testpcl//testnormal1.pcd");
-	//singlepclviewer("D://pointcloud//Q5.pcd");
-	return 0;
-	
-	
-
-	
-}
-int singlepclviewer(string file) {
-	pcl::PointCloud<pcl::PointXYZ>::Ptr cloud1(new pcl::PointCloud<pcl::PointXYZ>);
-	pcl::PointCloud<pcl::PointXYZRGBA>::Ptr cloud2(new pcl::PointCloud<pcl::PointXYZRGBA>);
-	pcl::PointCloud<pcl::PointXYZ>::Ptr cloud3(new pcl::PointCloud<pcl::PointXYZ>);
-	pcl::PointCloud<pcl::PointNormal>::Ptr cloud4(new pcl::PointCloud<pcl::PointNormal>);
-	// load the pcd to the pointer
-	//pcl::io::loadPCDFile<pcl::PointXYZ>(file, *cloud3);
-
-	pcl::io::loadPCDFile<pcl::PointXYZ>(file, *cloud1);
-
-	pcl::visualization::CloudViewer viewer("Cloud Viewer");
-	pcl::visualization::PCLVisualizer::Ptr m_PCLVisualizer;
-	//m_PCLVisualizer->addPointCloud();
-	//CloudViewer only shows the 
-	viewer.showCloud(cloud3);
-
-	
-	viewer.runOnVisualizationThreadOnce(viewerOneOff);
-
-	//This will get called once per visualization iteration
-	viewer.runOnVisualizationThread(viewerPsycho);
-	while (!viewer.wasStopped())
-	{
-		//you can also do cool processing here
-		//FIXME: Note that this is running in a separate thread from viewerPsycho
-		//and you should guard against race conditions yourself...
-		user_data++;
-	}
-
-	system("pause");
-	return(0);
-
-
-	return 0;
-}
-int singlepclview() {
-	pcl::PointCloud<pcl::PointXYZ> cloud;
-	// 创建点云
-	cloud.width = 10000;
-	cloud.height = 1;
-	cloud.is_dense = false;
-	cloud.points.resize(cloud.width * cloud.height);
-	for (size_t i = 0; i < cloud.points.size(); ++i)
-	{
-		////球体
-		float r = 100.0;
-		cloud.points[i].x = 2 * r * rand() / (RAND_MAX + 1.0f) - r;
-		cloud.points[i].y = sqrt(r * r - cloud.points[i].x * cloud.points[i].x) * rand() / (RAND_MAX + 1.0f) * ((2 * rand() / (RAND_MAX + 1.0f) - 1) > 0 ? 1 : -1);
-		cloud.points[i].z = sqrt(r * r - cloud.points[i].x * cloud.points[i].x - cloud.points[i].y * cloud.points[i].y) * rand() / (RAND_MAX + 1.0f) * ((2 * rand() / (RAND_MAX + 1.0f) - 1) > 0 ? 1 : -1);
-
-
-		//正方体
-		//cloud.points[i].x = 1024 * rand() / (RAND_MAX + 1.0f);
-		//cloud.points[i].y = 1024 * rand() / (RAND_MAX + 1.0f);
-		//cloud.points[i].z = 1024 * rand() / (RAND_MAX + 1.0f);
-	}
-	pcl::io::savePCDFileASCII("D:\\pointcloud\\testpcl\\ball_white.pcd", cloud);
-	std::cerr << "Saved " << cloud.points.size() << " data points to test_pcd.pcd." << std::endl;
-
-	// get a pcl pointer cloud1 2 3, rgba or not rgba
-	pcl::PointCloud<pcl::PointXYZ>::Ptr cloud1(new pcl::PointCloud<pcl::PointXYZ>);
-	pcl::PointCloud<pcl::PointXYZRGBA>::Ptr cloud2(new pcl::PointCloud<pcl::PointXYZRGBA>);
-	pcl::PointCloud<pcl::PointXYZ>::Ptr cloud3(new pcl::PointCloud<pcl::PointXYZ>);
-	// load the pcd to the pointer
-	pcl::io::loadPCDFile("D:\\pointcloud\\testpcl\\PointCloudG0.pcd", *cloud3);
-
-	// get a  pcl pointer 
-	pcl::PointCloud<pcl::PointXYZ>::Ptr filtered_cloud(new pcl::PointCloud<pcl::PointXYZ>);
-
-	// creat a voxelgrid
-	pcl::VoxelGrid<pcl::PointXYZ> sor;
-	pcl::ApproximateVoxelGrid<pcl::PointXYZ> sor2;
-	// origal pcl
-	sor.setInputCloud(cloud3);
-	sor2.setInputCloud(cloud3);
-	//filter
-	sor.setLeafSize(5, 5, 5);// 注意单位，默认m, 相关点云下可能是mm， 注意设置size大小
-	sor2.setLeafSize(0.5, 0.5, 0.5);
-	// new pcl
-	sor.filter(*filtered_cloud);
-	sor2.filter(*cloud1);
-
-	pcl::visualization::CloudViewer viewer("Cloud Viewer");
-
-
-	//blocks until the cloud is actually rendered
-	//viewer.setBackgroundColor(0, 0, 0.7);
-
-	//viewer.showCloud(filtered_cloud);
-	viewer.showCloud(cloud3);
-
-	//use the following functions to get access to the underlying more advanced/powerful
-	//PCLVisualizer
-
-	//This will only get called once
-	viewer.runOnVisualizationThreadOnce(viewerOneOff);
-
-	//This will get called once per visualization iteration
-	viewer.runOnVisualizationThread(viewerPsycho);
-	while (!viewer.wasStopped())
-	{
-		//you can also do cool processing here
-		//FIXME: Note that this is running in a separate thread from viewerPsycho
-		//and you should guard against race conditions yourself...
-		user_data++;
-	}
-
-	system("pause");
-	return(0);
-}
-int multiviewerndt() {
-	pcl::PointCloud<pcl::PointXYZ>::Ptr target_cloud(new pcl::PointCloud<pcl::PointXYZ>);
-	if (pcl::io::loadPCDFile<pcl::PointXYZ>("D:\\pointcloud\\testpcl\\room_scan1.pcd", *target_cloud) == -1)
+	const string cloudname = "twoboxes.pcd";
+	pcl::PointCloud<pcl::PointXYZ>::Ptr cloud(new pcl::PointCloud<pcl::PointXYZ>);
+	if (pcl::io::loadPCDFile<pcl::PointXYZ>(cloudname, *cloud) == -1)
 	{
 		PCL_ERROR("Couldn't read file room_scan1.pcd \n");
 		return (-1);
 	}
-	std::cout << "Loaded " << target_cloud->size() << " data points from room_scan2.pcd" << std::endl;
+	std::cout << "Loaded " << cloud->size() << " data points from: " << cloudname << std::endl;
 
-	// 加载从新视角得到的第二次扫描点云数据作为源点云
-	pcl::PointCloud<pcl::PointXYZ>::Ptr input_cloud(new pcl::PointCloud<pcl::PointXYZ>);
-	if (pcl::io::loadPCDFile<pcl::PointXYZ>("D:\\pointcloud\\testpcl\\room_scan2.pcd", *input_cloud) == -1)
-	{
-		PCL_ERROR("Couldn't read file room_scan2.pcd \n");
-		return (-1);
-	}
-	std::cout << "Loaded " << input_cloud->size() << " data points from room_scan2.pcd" << std::endl;
-	//以上的代码加载了两个PCD文件得到共享指针，后续配准是完成对源点云到目标点云的参考坐标系的变换矩阵的估计，得到第二组点云变换到第一组点云坐标系下的变换矩阵
-	// 将输入的扫描点云数据过滤到原始尺寸的10%以提高匹配的速度，只对源点云进行滤波，减少其数据量，
-	//而目标点云不需要滤波处理
-	//因为在NDT（normal distributions transform）算法中在目标点云对应的体素网格数据结构的统计计算不使用单个点，而是使用包含在每个体素单元格中的点的统计数据
-	pcl::PointCloud<pcl::PointXYZ>::Ptr filtered_cloud(new pcl::PointCloud<pcl::PointXYZ>);
-	// 下采样filter
-	pcl::ApproximateVoxelGrid<pcl::PointXYZ> approximate_voxel_filter;
-	approximate_voxel_filter.setLeafSize(0.2, 0.2, 0.2);
-	approximate_voxel_filter.setInputCloud(input_cloud);
-	approximate_voxel_filter.filter(*filtered_cloud);
-	std::cout << "Filtered cloud contains " << filtered_cloud->size()
-		<< " data points from room_scan2.pcd" << std::endl;
+	
+	// cloud transform accouding to surface
+	
+	Eigen::Matrix4f transform_1 = Eigen::Matrix4f::Identity();
 
-	// 初始化正态分布(NDT)对象
-	pcl::NormalDistributionsTransform<pcl::PointXYZ, pcl::PointXYZ> ndt;
+	transform_1(2, 0) =-0.135176;
+	transform_1(2, 1) = 0.0436936;
+	transform_1(2, 2) = 0.985858;
+	transform_1(2, 3) = 38.0787;
+	//    (row, column)
 
-	// 根据输入数据的尺度设置NDT相关参数
+	// Print the transformation  打印出这个变换矩阵
+	printf("Method #1: using a Matrix4f\n");
+	std::cout << transform_1 << std::endl;
 
-	ndt.setTransformationEpsilon(0.01);   //为终止条件设置最小转换差异
+	// Executing the transformation
+	pcl::PointCloud<pcl::PointXYZ>::Ptr transformed_cloud(new pcl::PointCloud<pcl::PointXYZ>());
+	// 你可以使用 transform_1 或者 transform_2;效果都是一样的 
+	pcl::transformPointCloud(*cloud, *transformed_cloud, transform_1);
 
-	ndt.setStepSize(0.1);    //为more-thuente线搜索设置最大步长
+	multiviewerndt(cloud, transformed_cloud); 
+	
+	return 0;
+	
 
-	ndt.setResolution(1.0);   //设置NDT网格网格结构的分辨率（voxelgridcovariance）
-	//以上参数在使用房间尺寸比例下运算比较好，但是如果需要处理例如一个咖啡杯子的扫描之类更小的物体，需要对参数进行很大程度的缩小
+	
+}
 
-	//设置匹配迭代的最大次数，这个参数控制程序运行的最大迭代次数，一般来说这个限制值之前优化程序会在epsilon变换阀值下终止
-	//添加最大迭代次数限制能够增加程序的鲁棒性阻止了它在错误的方向上运行时间过长
-	ndt.setMaximumIterations(35);
+int findplane(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud) 
+{
+	// Create the normal estimation class, and pass the input dataset to it
+	pcl::NormalEstimation<pcl::PointXYZ, pcl::Normal> ne;
+	ne.setInputCloud(cloud);
+	pcl::search::KdTree<pcl::PointXYZ>::Ptr tree(new pcl::search::KdTree<pcl::PointXYZ>());
+	ne.setSearchMethod(tree);
+	pcl::PointCloud<pcl::Normal>::Ptr normals(new pcl::PointCloud<pcl::Normal>);
+	// Use all neighbors in a sphere of radius 1cm
+	ne.setRadiusSearch(1);
+	//ne.setKSearch(20);
+	ne.compute(*normals);
+	pcl::PointCloud<pcl::PointNormal>::Ptr cloud_with_normals(new pcl::PointCloud<pcl::PointNormal>);
+	pcl::concatenateFields(*cloud, *normals, *cloud_with_normals);
 
-	ndt.setInputSource(filtered_cloud);  //过滤过的源点云
-	// Setting point cloud to be aligned to.
-	ndt.setInputTarget(target_cloud);  //目标点云
+	//（2）use RANSAC to get the plane
+	pcl::SACSegmentationFromNormals<pcl::PointXYZ, pcl::Normal> seg;
+	pcl::ModelCoefficients::Ptr coefficients_plane(new pcl::ModelCoefficients), coefficients_cylinder(new pcl::ModelCoefficients);
+	pcl::PointIndices::Ptr inliers_plane(new pcl::PointIndices), inliers_cylinder(new pcl::PointIndices);
+	pcl::PCDWriter writer;
+	pcl::ExtractIndices<pcl::PointXYZ> extract;
+	// Create the segmentation object for the planar model and set all the parameters
+	seg.setOptimizeCoefficients(true);//设置对估计的模型系数需要进行优化
+	seg.setModelType(pcl::SACMODEL_NORMAL_PLANE); //设置分割模型
+	seg.setNormalDistanceWeight(0.1);//设置表面法线权重系数
+	seg.setMethodType(pcl::SAC_RANSAC);//设置采用RANSAC作为算法的参数估计方法
+	seg.setMaxIterations(500); //设置迭代的最大次数
+	seg.setDistanceThreshold(0.5); //设置内点到模型的距离允许最大值
+	seg.setInputCloud(cloud);
+	seg.setInputNormals(normals);
+	// Obtain the plane inliers and coefficients
+	seg.segment(*inliers_plane, *coefficients_plane);
+	std::cerr << "Plane coefficients: " << *coefficients_plane << std::endl;
+	
+	// Extract the planar inliers from the input cloud
+	extract.setInputCloud(cloud);
+	extract.setIndices(inliers_plane);
+	extract.setNegative(false);
+	pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_plane(new pcl::PointCloud<pcl::PointXYZ>);
+	extract.filter(*cloud_plane);
+	multiviewerndt(cloud, cloud_plane);
+	return 1;
 
-	// 设置使用机器人测距法得到的粗略初始变换矩阵结果
-	Eigen::AngleAxisf init_rotation(0.6931, Eigen::Vector3f::UnitZ());
-	Eigen::Translation3f init_translation(1.79387, 0.720047, 0);
-	Eigen::Matrix4f init_guess = (init_translation * init_rotation).matrix();
+}
+int findboundary(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_plane) {
+	//calculate boundary;
+	/*
+	pcl::PointCloud<pcl::Boundary> boundary;
+	pcl::BoundaryEstimation<pcl::PointXYZ, pcl::Normal, pcl::Boundary> est;
+	est.setInputCloud(cloud_plane);
+	est.setInputNormals(normals_plane);
+	est.setSearchMethod(tree_plane);
+	est.setKSearch(50); //一般这里的数值越高，最终边界识别的精度越好
+	pcl::search::KdTree<pcl::PointXYZ>));
+	est.compute(boundary);*/
+	return 0;
+}
+int multiviewerndt(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud1, pcl::PointCloud<pcl::PointXYZ>::Ptr cloud2) {
+	
 
-	// 计算需要的刚体变换以便将输入的源点云匹配到目标点云
-	pcl::PointCloud<pcl::PointXYZ>::Ptr output_cloud(new pcl::PointCloud<pcl::PointXYZ>);
-	// filtered cloud aligned with initguess ==> get output cloud
-	ndt.align(*output_cloud, init_guess); // appliy the guessed matrix to the ndt
-	//这个地方的output_cloud不能作为最终的源点云变换，因为上面对点云进行了滤波处理
-	std::cout << "Normal Distributions Transform has converged:" << ndt.hasConverged()
-		<< " score: " << ndt.getFitnessScore() << std::endl;
-
-	// 使用创建的变换对为过滤的输入点云进行变换
-	pcl::transformPointCloud(*input_cloud, *output_cloud, ndt.getFinalTransformation());
-
-	// 保存转换后的源点云作为最终的变换输出
-	pcl::io::savePCDFileASCII("room_scan2_transformed.pcd", *output_cloud);
-
+	cout << "show cloud" << endl;
 	// 初始化点云可视化对象  // multi show 
 	boost::shared_ptr<pcl::visualization::PCLVisualizer>
 		viewer_final(new pcl::visualization::PCLVisualizer("3D Viewer"));
@@ -294,15 +177,15 @@ int multiviewerndt() {
 
 	// 对目标点云着色可视化 (red).
 	pcl::visualization::PointCloudColorHandlerCustom<pcl::PointXYZ>
-		target_color(target_cloud, 255, 0, 0);
-	viewer_final->addPointCloud<pcl::PointXYZ>(target_cloud, target_color, "target cloud");
+		target_color(cloud1, 255, 0, 0);
+	viewer_final->addPointCloud<pcl::PointXYZ>(cloud1, target_color, "target cloud");
 	viewer_final->setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_POINT_SIZE,
 		1, "target cloud");
 
 	// 对转换后的源点云着色 (green)可视化.
 	pcl::visualization::PointCloudColorHandlerCustom<pcl::PointXYZ>
-		output_color(output_cloud, 0, 255, 0);
-	viewer_final->addPointCloud<pcl::PointXYZ>(output_cloud, output_color, "output cloud");
+		output_color(cloud2, 0, 255, 0);
+	viewer_final->addPointCloud<pcl::PointXYZ>(cloud2, output_color, "output cloud");
 	viewer_final->setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_POINT_SIZE,
 		1, "output cloud");
 	//viewer_final->addPointCloud<pcl::PointXYZ>(input_cloud);
